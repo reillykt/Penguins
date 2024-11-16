@@ -22,63 +22,110 @@ player1, player2 = starting_positions()
 print(player1)
 print(player2)
 
+game_status = True
 round = 0
 possible_rounds=["Grid 1","Grid 2","Grid 3"]
 
 class Location:
-    def __init__(self, neighbors, aliveness):
+    def __init__(self, neighbors, aliveness, name):
         self.neighbors = neighbors  # instance variable
         self.aliveness = aliveness  # instance variable
+        self.name = name
     
 
 
 #round_neighbors = # either 1, 2, n (which round of edges)
 
-location0 = Location([], True)
-location1 = Location([], True)
+location0 = Location([], True, "Iceberg 0")
+location1 = Location([], True, "Iceberg 1")
 # if statement connecting which round edges they select and what the neighbors are
-location2 = Location([], True)
-location3 = Location([], True)
-location4 = Location([], True)
-location5 = Location([], True)
-location6 = Location([], True)
-location7 = Location([], True)
-location8 = Location([], True)
-location9 = Location([], True)
+location2 = Location([], True, "Iceberg 2")
+location3 = Location([], True, "Iceberg 3")
+location4 = Location([], True, "Iceberg 4")
+location5 = Location([], True, "Iceberg 5")
+location6 = Location([], True, "Iceberg 6")
+location7 = Location([], True, "Iceberg 7")
+location8 = Location([], True, "Iceberg 8")
+location9 = Location([], True, "Iceberg 9")
 if round == 1:
-    location0.neighbors = [1,3,9]
-    location1.neighbors = [0,4]
-    location2.neighbors = [3,4,9]
-    location3.neighbors = [0,2,6,9]
-    location4.neighbors = [1,2,8]
-    location5.neighbors = [6,8]
-    location6.neighbors = [3,5,7]
-    location7.neighbors = [6,8]
-    location8.neighbors = [2,4,5,7]
-    location9.neighbors = [0,2,3]
+    location0.neighbors = [0,1,3,9]
+    location1.neighbors = [1,0,4]
+    location2.neighbors = [2,3,4,9]
+    location3.neighbors = [3,0,2,6,9]
+    location4.neighbors = [4,1,2,8]
+    location5.neighbors = [5,6,8]
+    location6.neighbors = [6,3,5,7]
+    location7.neighbors = [7,6,8]
+    location8.neighbors = [8,2,4,5,7]
+    location9.neighbors = [9,0,2,3]
 
 alive_locations = [location0,location1,location2,location3,location4,location5,location6,location7,location8,location9]
 
+if player1 == 0:
+    player1 = location0
+if player1 == 1:
+    player1 = location1
+if player1 == 2:
+    player1 = location2
+if player1 == 3:
+    player1 = location3
+if player1 == 4:
+    player1 = location4
+if player1 == 5:
+    player1 = location5
+if player1 == 6:
+    player1 = location6
+if player1 == 7:
+    player1 = location7        
+if player1 == 8:
+    player1 = location8
+if player1 == 9:
+    player1 = location9
+if player2 == 0:
+    player2 = location0
+if player2 == 1:
+    player2 = location1
+if player2 == 2:
+    player2 = location2
+if player2 == 3:
+    player2 = location3
+if player2 == 4:
+    player2 = location4
+if player2 == 5:
+    player2 = location5
+if player2 == 6:
+    player2 = location6
+if player2 == 7:
+    player2 = location7        
+if player2 == 8:
+    player2 = location8
+if player2 == 9:
+    player2 = location9
 
 
-
-def next_round(alive_locations):
-    length = 0
-    for location in alive_locations:
-        length +- 1
-    to_die = random.randint(0,length)
-    kill(to_die)
-    if player1 == player2 == to_die:
-        result = "tie"
-        end_game(result)
-    elif player1 == to_die:
-        lose(player1)
-        result = "Player1 loss"
-        end_game(result)
-    elif player2== to_die:
-        lose(player2)
-        result = "Player1 loss"
-        end_game(result)
+def next_round(alive_locations, game_status):
+    if len(alive_locations) == 1 :
+        end_game("tie", game_status)
+    else:
+        to_die = random.randint(0,len(alive_locations)-1)
+        print(str(to_die))
+        kill(to_die, alive_locations)
+        if player1 == player2 == to_die:
+            result = "tie"
+            end_game(result, game_status)
+        elif player1 == to_die:
+            lose(player1)
+            result = "Player1 loss"
+            end_game(result, game_status)
+        elif player2== to_die:
+            lose(player2)
+            result = "Player1 loss"
+            end_game(result, game_status)
+    player1_neighbors = []
+    for neighbor in player1.neighbors:
+        player1_neighbors.append(str(neighbor))
+    print(f"Player 1, you are currently at {player1.name}. You can move to Icebergs {player1_neighbors}. Enter your new location: ")
+    # player1 = 
     
     
 
@@ -91,12 +138,14 @@ def tie():
 
 
 def kill(index, alive_locations):
+    print(str(index))
     victim = alive_locations[index]
+    print("Iceberg "+victim.name+" has melted!")
     victim.aliveness = False
     alive_locations.remove(victim)
     return alive_locations
 
-def end_game(result):
+def end_game(result, game_status):
     if result == "tie":
         label = Label(root,text="Game Over: Tie Game!",
                 font=('Arial',40,'bold'),  # (font,size,style)
@@ -124,12 +173,12 @@ def end_game(result):
                 bd=10, # border width
                 padx=20) # pads space between text and border. also can do pady
         label.pack()
-    root.update()
+    root.mainloop()
+    game_status = False
 
 root = tk.Tk()
 root.geometry('300x300')
 root.resizable(False, False)
-root.title('Radio Button Demo')
 
 # window = Tk()
 x = IntVar()
@@ -167,7 +216,8 @@ def order():
         round = 3
         
 
-
+while game_status ==True:
+    next_round(alive_locations, game_status)
 
 # def open_map(map):
 #     canvas = Canvas(root,height=500,width=500)
