@@ -6,7 +6,7 @@ from tkinter import ttk
 from tkinter.messagebox import showinfo
 
 player1 = 0
-player2=0
+player2 = 0
 # asking players where they want to start the game
 possible_numbers = [1,2,3,4,5,6,7,8,9,0]
 def starting_positions():
@@ -83,47 +83,7 @@ if round == 3:
     location9.neighbors = [0,3,7]
 alive_locations = [location0,location1,location2,location3,location4,location5,location6,location7,location8,location9]
 
-if player1 == 0:
-    player1 = location0
-if player1 == 1:
-    player1 = location1
-if player1 == 2:
-    player1 = location2
-if player1 == 3:
-    player1 = location3
-if player1 == 4:
-    player1 = location4
-if player1 == 5:
-    player1 = location5
-if player1 == 6:
-    player1 = location6
-if player1 == 7:
-    player1 = location7        
-if player1 == 8:
-    player1 = location8
-if player1 == 9:
-    player1 = location9
-if player2 == 0:
-    player2 = location0
-if player2 == 1:
-    player2 = location1
-if player2 == 2:
-    player2 = location2
-if player2 == 3:
-    player2 = location3
-if player2 == 4:
-    player2 = location4
-if player2 == 5:
-    player2 = location5
-if player2 == 6:
-    player2 = location6
-if player2 == 7:
-    player2 = location7        
-if player2 == 8:
-    player2 = location8
-if player2 == 9:
-    player2 = location9
-
+player_locations = {0:location0, 1:location1, 2:location2, 3:location3, 4:location4, 5:location5, 6:location6, 7:location7, 8:location8, 9:location9}
 
 def next_round(alive_locations, game_status, player1, player2):
     if len(alive_locations) == 1 :
@@ -143,21 +103,27 @@ def next_round(alive_locations, game_status, player1, player2):
             result = "Player1 loss"
             end_game(result, game_status)
     player1_neighbors = []
-    for neighbor in player1.neighbors:
+    for neighbor in player_locations[player1].neighbors:
         player1_neighbors.append(str(neighbor))
-    print(f"Player 1, you are currently at {player1.name}. You can move to Icebergs {player1_neighbors}")
+    current_neighbors1 = player_locations[player1].neighbors
+    print(f"Player 1, you are currently at {player_locations[player1].name}. You can move to Icebergs {player1_neighbors}")
     player1 = int(input("Enter your new location: "))
-    while player1 not in player1_neighbors:
-        print("Not a digit!")
-        player1 = input("Player 1: To choose a location, enter a digit (0-9): ")
+    while player1 not in current_neighbors1:
+        print("Not an avaiable iceberg!")
+        player1 = input("Player 1: enter one of your possible moves (as an int 0-9) : ")
+    
     player2_neighbors = []
-    for neighbor in player2.neighbors:
+    for neighbor in player_locations[player2].neighbors:
         player2_neighbors.append(str(neighbor))
-    print(f"Player 2, you are currently at {player2.name}. You can move to Icebergs {player2_neighbors}")
+    current_neighbors2 = player_locations[player2].neighbors
+    print(f"Player 2, you are currently at {player_locations[player2].name}. You can move to Icebergs {player2_neighbors}")
     player2 = int(input("Enter your new location: "))
-    while player2 not in player2_neighbors:
-        print("Not a digit!")
-        player2 = input("Player 2: To choose a location, enter a digit (0-9): ")
+    while player2 not in current_neighbors2:
+        print("Not an avaiable iceberg!")
+        player2 = input("Player 2: enter one of your possible moves (as an int 0-9) : ")
+    while game_status == True:
+        next_round(alive_locations, game_status, player1, player2)
+
 
     
     
@@ -172,9 +138,13 @@ def tie():
 
 def kill(index, alive_locations):
     victim = alive_locations[index]
-    print("Iceberg "+victim.name+" has melted!")
+    print(victim.name+" has melted!")
     victim.aliveness = False
     alive_locations.remove(victim)
+    for neighbor in victim.neighbors: # to remove victim as a neighbor for each
+        alive_locations
+        player_locations[neighbor].neighbors.remove(victim)
+
     return alive_locations
 
 def end_game(result, game_status):
@@ -189,7 +159,7 @@ def end_game(result, game_status):
         label.pack()
     elif result == "Player1 loss":
         label = Label(root,text="Game Over: Player 2 Wins!",
-                font=('Arial',40,'bold'),  # (font,size,style)
+                font=('Arial',25,'bold'),  # (font,size,style)
                 fg="pink",  # fg stands for foreground
                 bg="brown", # bg stands for background
                 relief=RAISED, # border
@@ -198,7 +168,7 @@ def end_game(result, game_status):
         label.pack()
     elif result == "Player2 loss":
         label = Label(root,text="Game Over: Player 1 Wins!",
-                font=('Arial',40,'bold'),  # (font,size,style)
+                font=('Arial',25,'bold'),  # (font,size,style)
                 fg="pink",  # fg stands for foreground
                 bg="brown", # bg stands for background
                 relief=RAISED, # border
