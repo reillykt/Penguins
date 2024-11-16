@@ -59,6 +59,29 @@ if round == 1:
     location8.neighbors = [8,2,4,5,7]
     location9.neighbors = [9,0,2,3]
 
+if round == 2:
+    location0.neighbors = [2,3,9]
+    location1.neighbors = [2,4]
+    location2.neighbors = [0,1,8]
+    location3.neighbors = [0,6,9]
+    location4.neighbors = [1,8]
+    location5.neighbors = [6,7,8]
+    location6.neighbors = [3,5,9]
+    location7.neighbors = [5,8]
+    location8.neighbors = [2,4,5,7]
+    location9.neighbors = [0,3,6]
+
+if round == 3:
+    location0.neighbors = [1,2,9]
+    location1.neighbors = [0,2,5]
+    location2.neighbors = [0,1,3,4]
+    location3.neighbors = [2,6,8,9]
+    location4.neighbors = [2,5,8]
+    location5.neighbors = [1,4]
+    location6.neighbors = [3,7,8]
+    location7.neighbors = [6,9]
+    location8.neighbors = [3,4,6]
+    location9.neighbors = [0,3,7]
 alive_locations = [location0,location1,location2,location3,location4,location5,location6,location7,location8,location9]
 
 if player1 == 0:
