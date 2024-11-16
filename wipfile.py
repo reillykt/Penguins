@@ -31,59 +31,154 @@ class Location:
         self.aliveness = aliveness  # instance variable
         self.name = name
     
+locations = []
+for i in range(10):  # Adjust the range to however many locations you need
+    location = Location([], True, f"Iceberg {i}")
+    locations.append(location)
 
+# location0 = Location([], True, "Iceberg 0")
+# location1 = Location([], True, "Iceberg 1")
+# # if statement connecting which round edges they select and what the neighbors are
+# location2 = Location([], True, "Iceberg 2")
+# location3 = Location([], True, "Iceberg 3")
+# location4 = Location([], True, "Iceberg 4")
+# location5 = Location([], True, "Iceberg 5")
+# location6 = Location([], True, "Iceberg 6")
+# location7 = Location([], True, "Iceberg 7")
+# location8 = Location([], True, "Iceberg 8")
+# location9 = Location([], True, "Iceberg 9")
 
-#round_neighbors = # either 1, 2, n (which round of edges)
+#dictionary storing 3 maps
+neighbors_by_map = {
+    1: [[0, 1, 3, 9],
+        [1, 0, 4],
+        [2, 3, 4, 9],
+        [3, 0, 2, 6, 9],
+        [4, 1, 2, 8],
+        [5, 6, 8],
+        [6, 3, 5, 7],
+        [7, 6, 8],
+        [8, 2, 4, 5, 7],
+        [9, 0, 2, 3]],
 
-location0 = Location([], True, "Iceberg 0")
-location1 = Location([], True, "Iceberg 1")
-# if statement connecting which round edges they select and what the neighbors are
-location2 = Location([], True, "Iceberg 2")
-location3 = Location([], True, "Iceberg 3")
-location4 = Location([], True, "Iceberg 4")
-location5 = Location([], True, "Iceberg 5")
-location6 = Location([], True, "Iceberg 6")
-location7 = Location([], True, "Iceberg 7")
-location8 = Location([], True, "Iceberg 8")
-location9 = Location([], True, "Iceberg 9")
-if round == 1:
-    location0.neighbors = [0,1,3,9]
-    location1.neighbors = [1,0,4]
-    location2.neighbors = [2,3,4,9]
-    location3.neighbors = [3,0,2,6,9]
-    location4.neighbors = [4,1,2,8]
-    location5.neighbors = [5,6,8]
-    location6.neighbors = [6,3,5,7]
-    location7.neighbors = [7,6,8]
-    location8.neighbors = [8,2,4,5,7]
-    location9.neighbors = [9,0,2,3]
+    2: [[2, 3, 9],
+        [2, 4],
+        [0, 1, 8],
+        [0, 6, 9],
+        [1, 8],
+        [6, 7, 8],
+        [3, 5, 9],
+        [5, 8],
+        [2, 4, 5, 7],
+        [0, 3, 6]],
 
-if round == 2:
-    location0.neighbors = [2,3,9]
-    location1.neighbors = [2,4]
-    location2.neighbors = [0,1,8]
-    location3.neighbors = [0,6,9]
-    location4.neighbors = [1,8]
-    location5.neighbors = [6,7,8]
-    location6.neighbors = [3,5,9]
-    location7.neighbors = [5,8]
-    location8.neighbors = [2,4,5,7]
-    location9.neighbors = [0,3,6]
+    3: [[1, 2, 9],
+        [0, 2, 5],
+        [0, 1, 3, 4],
+        [2, 6, 8, 9],
+        [2, 5, 8],
+        [1, 4],
+        [3, 7, 8],
+        [6, 9],
+        [3, 4, 6],
+        [0, 3, 7]]
+}
+# if round == 1:
+#     location0.neighbors = [0,1,3,9]
+#     location1.neighbors = [1,0,4]
+#     location2.neighbors = [2,3,4,9]
+#     location3.neighbors = [3,0,2,6,9]
+#     location4.neighbors = [4,1,2,8]
+#     location5.neighbors = [5,6,8]
+#     location6.neighbors = [6,3,5,7]
+#     location7.neighbors = [7,6,8]
+#     location8.neighbors = [8,2,4,5,7]
+#     location9.neighbors = [9,0,2,3]
 
-if round == 3:
-    location0.neighbors = [1,2,9]
-    location1.neighbors = [0,2,5]
-    location2.neighbors = [0,1,3,4]
-    location3.neighbors = [2,6,8,9]
-    location4.neighbors = [2,5,8]
-    location5.neighbors = [1,4]
-    location6.neighbors = [3,7,8]
-    location7.neighbors = [6,9]
-    location8.neighbors = [3,4,6]
-    location9.neighbors = [0,3,7]
+# if round == 2:
+#     location0.neighbors = [2,3,9]
+#     location1.neighbors = [2,4]
+#     location2.neighbors = [0,1,8]
+#     location3.neighbors = [0,6,9]
+#     location4.neighbors = [1,8]
+#     location5.neighbors = [6,7,8]
+#     location6.neighbors = [3,5,9]
+#     location7.neighbors = [5,8]
+#     location8.neighbors = [2,4,5,7]
+#     location9.neighbors = [0,3,6]
+
+# if round == 3:
+#     location0.neighbors = [1,2,9]
+#     location1.neighbors = [0,2,5]
+#     location2.neighbors = [0,1,3,4]
+#     location3.neighbors = [2,6,8,9]
+#     location4.neighbors = [2,5,8]
+#     location5.neighbors = [1,4]
+#     location6.neighbors = [3,7,8]
+#     location7.neighbors = [6,9]
+#     location8.neighbors = [3,4,6]
+#     location9.neighbors = [0,3,7]
+def set_neighbors(round_num):
+    neighbors = neighbors_by_map.get(round_num)
+    if neighbors:
+        for i, neighbor_list in enumerate(neighbors):
+            for idx in neighbor_list:
+                locations[i].neighbors = [locations[idx]] 
+
+#convert player input to the coresponding location
+def assign_location(player_input):
+    return locations[player_input]
+
+player1_location = assign_location(player1)
+player2_location = assign_location(player2)
+                                      
 alive_locations = [location0,location1,location2,location3,location4,location5,location6,location7,location8,location9]
 
+<<<<<<< HEAD
 player_locations = {0:location0, 1:location1, 2:location2, 3:location3, 4:location4, 5:location5, 6:location6, 7:location7, 8:location8, 9:location9}
+=======
+# if player1 == 0:
+#     player1 = location0
+# if player1 == 1:
+#     player1 = location1
+# if player1 == 2:
+#     player1 = location2
+# if player1 == 3:
+#     player1 = location3
+# if player1 == 4:
+#     player1 = location4
+# if player1 == 5:
+#     player1 = location5
+# if player1 == 6:
+#     player1 = location6
+# if player1 == 7:
+#     player1 = location7        
+# if player1 == 8:
+#     player1 = location8
+# if player1 == 9:
+#     player1 = location9
+# if player2 == 0:
+#     player2 = location0
+# if player2 == 1:
+#     player2 = location1
+# if player2 == 2:
+#     player2 = location2
+# if player2 == 3:
+#     player2 = location3
+# if player2 == 4:
+#     player2 = location4
+# if player2 == 5:
+#     player2 = location5
+# if player2 == 6:
+#     player2 = location6
+# if player2 == 7:
+#     player2 = location7        
+# if player2 == 8:
+#     player2 = location8
+# if player2 == 9:
+#     player2 = location9
+
+>>>>>>> 4d2becd0313451f7379196ebc85c81b5a2540695
 
 def next_round(alive_locations, game_status, player1, player2):
     if len(alive_locations) == 1 :
