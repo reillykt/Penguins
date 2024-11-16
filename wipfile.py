@@ -5,7 +5,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import showinfo
 
-
+player1 = 0
+player2=0
 # asking players where they want to start the game
 possible_numbers = [1,2,3,4,5,6,7,8,9,0]
 def starting_positions():
@@ -19,11 +20,9 @@ def starting_positions():
         player2 = input("Player 2: To choose a starting location, enter a digit (0-9): ")
     return player1, player2
 player1, player2 = starting_positions()
-print(player1)
-print(player2)
 
 game_status = True
-round = 0
+round = 1
 possible_rounds=["Grid 1","Grid 2","Grid 3"]
 
 class Location:
@@ -126,12 +125,11 @@ if player2 == 9:
     player2 = location9
 
 
-def next_round(alive_locations, game_status):
+def next_round(alive_locations, game_status, player1, player2):
     if len(alive_locations) == 1 :
         end_game("tie", game_status)
     else:
         to_die = random.randint(0,len(alive_locations)-1)
-        print(str(to_die))
         kill(to_die, alive_locations)
         if player1 == player2 == to_die:
             result = "tie"
@@ -147,8 +145,20 @@ def next_round(alive_locations, game_status):
     player1_neighbors = []
     for neighbor in player1.neighbors:
         player1_neighbors.append(str(neighbor))
-    print(f"Player 1, you are currently at {player1.name}. You can move to Icebergs {player1_neighbors}. Enter your new location: ")
-    # player1 = 
+    print(f"Player 1, you are currently at {player1.name}. You can move to Icebergs {player1_neighbors}")
+    player1 = int(input("Enter your new location: "))
+    while player1 not in player1_neighbors:
+        print("Not a digit!")
+        player1 = input("Player 1: To choose a location, enter a digit (0-9): ")
+    player2_neighbors = []
+    for neighbor in player2.neighbors:
+        player2_neighbors.append(str(neighbor))
+    print(f"Player 2, you are currently at {player2.name}. You can move to Icebergs {player2_neighbors}")
+    player2 = int(input("Enter your new location: "))
+    while player2 not in player2_neighbors:
+        print("Not a digit!")
+        player2 = input("Player 2: To choose a location, enter a digit (0-9): ")
+
     
     
 
@@ -161,7 +171,6 @@ def tie():
 
 
 def kill(index, alive_locations):
-    print(str(index))
     victim = alive_locations[index]
     print("Iceberg "+victim.name+" has melted!")
     victim.aliveness = False
@@ -240,7 +249,7 @@ def order():
         
 
 while game_status ==True:
-    next_round(alive_locations, game_status)
+    next_round(alive_locations, game_status, player1, player2)
 
 # def open_map(map):
 #     canvas = Canvas(root,height=500,width=500)
