@@ -5,6 +5,23 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import showinfo
 
+
+# asking players where they want to start the game
+possible_numbers = [1,2,3,4,5,6,7,8,9,0]
+def starting_positions():
+    player1 = int(input("Player 1: To choose a starting location, enter a digit (0-9): "))
+    while player1 not in possible_numbers:
+        print("Not a digit!")
+        player1 = input("Player 1: To choose a starting location, enter a digit (0-9): ")
+    player2 = int(input("Player 2: To choose a starting location, enter a digit (0-9): "))
+    while player2 not in possible_numbers:
+        print("Not a digit!")
+        player2 = input("Player 2: To choose a starting location, enter a digit (0-9): ")
+    return player1, player2
+player1, player2 = starting_positions()
+print(player1)
+print(player2)
+
 round = 0
 possible_rounds=["Grid 1","Grid 2","Grid 3"]
 
@@ -42,8 +59,6 @@ if round == 1:
 
 alive_locations = [location0,location1,location2,location3,location4,location5,location6,location7,location8,location9]
 
-player1 = location0 # change based on input
-player2 = location0 # change
 
 
 
@@ -64,6 +79,7 @@ def next_round(alive_locations):
         lose(player2)
         result = "Player1 loss"
         end_game(result)
+    
     
 
 
