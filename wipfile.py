@@ -126,6 +126,8 @@ def next_round(alive_locations, game_status, player1, player2, round_number, loc
         round_number += 1
         to_die = random.randint(0,len(alive_locations)-1)
         to_compare = alive_locations[to_die].number
+        print(f"{player1}")
+        print(f"{locations_dict[player1]}")
         print(f"{locations_dict[player1].neighbors}")
         alive_locations, locations_dict = kill(to_die, alive_locations)
         print(f"{locations_dict[player1].neighbors}")
@@ -149,7 +151,6 @@ def next_round(alive_locations, game_status, player1, player2, round_number, loc
             if game_status == True:
                 for neighbor in locations_dict[player1].neighbors:
                     player1_neighbors.append(str(neighbor))
-                current_neighbors1 = locations[player1].neighbors
                 print(f"Player 1, you are currently at {locations[player1].name}. You can move to/stay at Icebergs: {player1_neighbors}")
                 new_player1 = input(f"Enter your new location out of options {player1_neighbors}: ")
                 while new_player1 not in player1_neighbors:
@@ -179,6 +180,134 @@ def lose(player):
 
 def tie():
     pass
+
+
+import tkinter as tk
+from tkinter import messagebox
+import random
+
+class IcebergGame:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Iceberg Survival Game")
+        self.root.geometry("600x600")
+        self.root.resizable(False, False)
+
+        self.locations = []
+        self.dead_icebergs = []
+        self.alive_locations = []
+        self.player_positions = {"Player 1": 0, "Player 2": 0}
+        self.round_number = 0
+        self.game_status = True
+
+        # Initialize icebergs
+        for i in range(10):
+            location = {"number": i, "aliveness": True, "neighbors": [], "name": f"Iceberg {i}"}
+            self.locations.append(location)
+            self.alive_locations.append(location)
+
+        # Neighbors for map 1
+        self.grid1dict = {
+            0: [1, 3, 9], 1: [0, 4], 2: [3, 4, 9], 3: [0, 2, 6, 9],
+            4: [1, 2, 8], 5: [6, 8], 6: [3, 5, 7], 7: [6, 8],
+            8: [2, 4, 5, 7], 9: [0, 2, 3]
+        }
+
+        self.set_neighbors()
+
+        # GUI components
+        self.canvas = tk.Canvas(root, width=600, height=500, bg="lightblue")
+        self.canvas.pack()
+
+        self.control_frame = tk.Frame(root)
+        self.control_frame.pack()
+
+        self.start_btn = tk.Button(self.control_frame, text="Start Game", command=self.start_game)
+        self.start_btn.pack(side=tk.LEFT, padx=10)
+
+        self.next_btn = tk.Button(self.control_frame, text="Next Round", state=tk.DISABLED, command=self.next_round)
+        self.next_btn.pack(side=tk.LEFT, padx=10)
+
+        self.status_label = tk.Label(self.control_frame, text="Welcome to the Iceberg Survival Game!")
+        self.status_label.pack(pady=10)
+
+        self.iceberg_positions = {}
+        self.draw_icebergs()
+
+    def set_neighbors(self):
+        for location in self.locations:
+            location["neighbors"] = self.grid1dict[location["number"]]
+
+    def draw_icebergs(self):
+        positions = [
+            (100, 100), (200, 50), (300, 100), (400, 50),
+            (100, 300), (200, 250), (300, 300), (400, 250),
+            (250, 400), (300, 450)
+        ]
+        for idx, (x, y) in enumerate(positions):
+            self.iceberg_positions[idx] = self.canvas.create_oval(
+                x, y, x + 50, y + 50, fill="white", tags=f"iceberg_{idx}"
+            )
+            self.canvas.create_text(x + 25, y + 25, text=str(idx), tags=f"iceberg_text_{idx}")
+
+    def start_game(self):
+        self.player_positions["Player 1"] = random.choice(range(10))
+        self.player_positions["Player 2"] = random.choice(range(10))
+        while self.player_positions["Player 2"] == self.player_positions["Player 1"]:
+            self.player_positions["Player 2"] = random.choice(range(10))
+
+        self.update_icebergs()
+        self.status_label.config(text="Game Started! Players have chosen starting positions.")
+        self.start_btn.config(state=tk.DISABLED)
+        self.next_btn.config(state=tk.NORMAL)
+
+    def update_icebergs(self):
+        for location in self.locations:
+            idx = location["number"]
+            fill_color = "white"
+            if idx == self.player_positions["Player 1"]:
+                fill_color = "red"
+            elif idx == self.player_positions["Player 2"]:
+                fill_color = "blue"
+            elif idx in self.dead_icebergs:
+                fill_color = "gray"
+
+            self.canvas.itemconfig(self.iceberg_positions[idx], fill=fill_color)
+
+    def next_round(self):
+        if not self.alive_locations:
+            self.end_game("tie")
+            return
+
+        self.round_number += 1
+        to_die = random.choice(self.alive_locations)
+        self.dead_icebergs.append(to_die["number"])
+        self.alive_locations.remove(to_die)
+
+        for neighbor in to_die["neighbors"]:
+            self.locations[neighbor]["neighbors"] = [
+                n for n in self.locations[neighbor]["neighbors"] if n != to_die["number"]
+            ]
+
+        self.update_icebergs()
+
+        if self.player_positions["Player 1"] in self.dead_icebergs:
+            self.end_game("Player 2 wins")
+        elif self.player_positions["Player 2"] in self.dead_icebergs:
+            self.end_game("Player 1 wins")
+        elif not self.alive_locations:
+            self.end_game("tie")
+
+    def end_game(self, result):
+        self.status_label.config(text=f"Game Over: {result}")
+        self.next_btn.config(state=tk.DISABLED)
+        messagebox.showinfo("Game Over", f"{result}")
+
+
+# Run the game
+root = tk.Tk()
+game = IcebergGame(root)
+root.mainloop()
 
 
 def kill(index, alive_locations):
