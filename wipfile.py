@@ -8,18 +8,6 @@ from tkinter.messagebox import showinfo
 player1 = 0
 player2 = 0
 # asking players where they want to start the game
-possible_numbers = [1,2,3,4,5,6,7,8,9,0]
-def starting_positions():
-    player1 = int(input("Player 1: To choose a starting location, enter a digit (0-9): "))
-    while player1 not in possible_numbers:
-        print("Not a digit!")
-        player1 = input("Player 1: To choose a starting location, enter a digit (0-9): ")
-    player2 = int(input("Player 2: To choose a starting location, enter a digit (0-9): "))
-    while player2 not in possible_numbers:
-        print("Not a digit!")
-        player2 = input("Player 2: To choose a starting location, enter a digit (0-9): ")
-    return player1, player2
-player1, player2 = starting_positions()
 
 game_status = True
 round = 1
@@ -33,7 +21,7 @@ class Location:
     
 locations = []
 for i in range(10):  # Adjust the range to however many locations you need
-    location = Location([], True, f"Iceberg {i}")
+    location = Location(i, True, f"Iceberg {i}")
     locations.append(location)
 
 # location0 = Location([], True, "Iceberg 0")
@@ -50,16 +38,16 @@ for i in range(10):  # Adjust the range to however many locations you need
 
 #dictionary storing 3 maps
 neighbors_by_map = {
-    1: [[0, 1, 3, 9],
-        [1, 0, 4],
-        [2, 3, 4, 9],
-        [3, 0, 2, 6, 9],
-        [4, 1, 2, 8],
-        [5, 6, 8],
-        [6, 3, 5, 7],
-        [7, 6, 8],
-        [8, 2, 4, 5, 7],
-        [9, 0, 2, 3]],
+    1: [[1, 3, 9],
+        [0, 4],
+        [3, 4, 9],
+        [0, 2, 6, 9],
+        [1, 2, 8],
+        [6, 8],
+        [3, 5, 7],
+        [6, 8],
+        [2, 4, 5, 7],
+        [0, 2, 3]],
 
     2: [[2, 3, 9],
         [2, 4],
@@ -83,107 +71,50 @@ neighbors_by_map = {
         [3, 4, 6],
         [0, 3, 7]]
 }
-# if round == 1:
-#     location0.neighbors = [0,1,3,9]
-#     location1.neighbors = [1,0,4]
-#     location2.neighbors = [2,3,4,9]
-#     location3.neighbors = [3,0,2,6,9]
-#     location4.neighbors = [4,1,2,8]
-#     location5.neighbors = [5,6,8]
-#     location6.neighbors = [6,3,5,7]
-#     location7.neighbors = [7,6,8]
-#     location8.neighbors = [8,2,4,5,7]
-#     location9.neighbors = [9,0,2,3]
+grid1dict = {0:[0,1, 3, 9], 1:[0, 1, 4], 2:[2, 3, 4, 9], 3: [0, 2, 3, 6, 9], 4: [1, 2, 4, 8], 5:[5,6, 8], 6: [3, 5,6, 7], 7:[6,7, 8], 8:[2, 4, 5, 7,8], 9:[0, 2, 3,9] }
 
-# if round == 2:
-#     location0.neighbors = [2,3,9]
-#     location1.neighbors = [2,4]
-#     location2.neighbors = [0,1,8]
-#     location3.neighbors = [0,6,9]
-#     location4.neighbors = [1,8]
-#     location5.neighbors = [6,7,8]
-#     location6.neighbors = [3,5,9]
-#     location7.neighbors = [5,8]
-#     location8.neighbors = [2,4,5,7]
-#     location9.neighbors = [0,3,6]
-
-# if round == 3:
-#     location0.neighbors = [1,2,9]
-#     location1.neighbors = [0,2,5]
-#     location2.neighbors = [0,1,3,4]
-#     location3.neighbors = [2,6,8,9]
-#     location4.neighbors = [2,5,8]
-#     location5.neighbors = [1,4]
-#     location6.neighbors = [3,7,8]
-#     location7.neighbors = [6,9]
-#     location8.neighbors = [3,4,6]
-#     location9.neighbors = [0,3,7]
 def set_neighbors(round_num):
-    neighbors = neighbors_by_map.get(round_num)
-    if neighbors:
-        for i, neighbor_list in enumerate(neighbors):
-            for idx in neighbor_list:
-                locations[i].neighbors = [locations[idx]] 
+    for location in locations:
+        location.neighbors = grid1dict[location.neighbors]
+    # neighbors = neighbors_by_map.get(round_num) # neighbors is a list of lists of integers
+    # if neighbors:
+    #     for i, neighbor_list in enumerate(neighbors): # for index (which location has those neighbors), list of neighbors
+    #         for idx in neighbor_list:
+    #             print(f"{locations[i].neighbors}")
+                #locations[i].neighbors = locations[i].neighbors.append([locations[idx]])
 
+set_neighbors(round)
 #convert player input to the coresponding location
-def assign_location(player_input):
-    return locations[player_input]
+# def assign_location(player_input):
+#     return locations[player_input]
 
-player1_location = assign_location(player1)
-player2_location = assign_location(player2)
+# player1 = assign_location(player1)
+# player2 = assign_location(player2)
                                       
-alive_locations = [location0,location1,location2,location3,location4,location5,location6,location7,location8,location9]
+alive_locations = [locations[0],locations[1],locations[2],locations[3],locations[4],locations[5],locations[6],locations[7],locations[8],locations[9]]
 
-<<<<<<< HEAD
-player_locations = {0:location0, 1:location1, 2:location2, 3:location3, 4:location4, 5:location5, 6:location6, 7:location7, 8:location8, 9:location9}
-=======
-# if player1 == 0:
-#     player1 = location0
-# if player1 == 1:
-#     player1 = location1
-# if player1 == 2:
-#     player1 = location2
-# if player1 == 3:
-#     player1 = location3
-# if player1 == 4:
-#     player1 = location4
-# if player1 == 5:
-#     player1 = location5
-# if player1 == 6:
-#     player1 = location6
-# if player1 == 7:
-#     player1 = location7        
-# if player1 == 8:
-#     player1 = location8
-# if player1 == 9:
-#     player1 = location9
-# if player2 == 0:
-#     player2 = location0
-# if player2 == 1:
-#     player2 = location1
-# if player2 == 2:
-#     player2 = location2
-# if player2 == 3:
-#     player2 = location3
-# if player2 == 4:
-#     player2 = location4
-# if player2 == 5:
-#     player2 = location5
-# if player2 == 6:
-#     player2 = location6
-# if player2 == 7:
-#     player2 = location7        
-# if player2 == 8:
-#     player2 = location8
-# if player2 == 9:
-#     player2 = location9
+#player_locations = {0:location0, 1:location1, 2:location2, 3:location3, 4:location4, 5:location5, 6:location6, 7:location7, 8:location8, 9:location9}
 
->>>>>>> 4d2becd0313451f7379196ebc85c81b5a2540695
+def starting_positions():
+    player1 = int(input("Player 1: To choose a starting location, enter a digit (0-9): "))
+    while player1 not in range(10):
+        print("Not a digit!")
+        player1 = input("Player 1: To choose a starting location, enter a digit (0-9): ")
+    player2 = int(input("Player 2: To choose a starting location, enter a digit (0-9): "))
+    while player2 not in range(10):
+        print("Not a digit!")
+        player2 = input("Player 2: To choose a starting location, enter a digit (0-9): ")
+    return player1, player2
+player1, player2 = starting_positions()
 
-def next_round(alive_locations, game_status, player1, player2):
+
+round_number = 0
+def next_round(alive_locations, game_status, player1, player2, round_number):
+    check_endgame({"Player 1": player1, "Player 2": player2}, dead_icebergs, round_number, total_rounds = 9)
     if len(alive_locations) == 1 :
         end_game("tie", game_status)
     else:
+        round_number += 1
         to_die = random.randint(0,len(alive_locations)-1)
         kill(to_die, alive_locations)
         if player1 == player2 == to_die:
@@ -198,26 +129,27 @@ def next_round(alive_locations, game_status, player1, player2):
             result = "Player1 loss"
             end_game(result, game_status)
     player1_neighbors = []
-    for neighbor in player_locations[player1].neighbors:
-        player1_neighbors.append(str(neighbor))
-    current_neighbors1 = player_locations[player1].neighbors
-    print(f"Player 1, you are currently at {player_locations[player1].name}. You can move to Icebergs {player1_neighbors}")
-    player1 = int(input("Enter your new location: "))
-    while player1 not in current_neighbors1:
-        print("Not an avaiable iceberg!")
-        player1 = input("Player 1: enter one of your possible moves (as an int 0-9) : ")
-    
-    player2_neighbors = []
-    for neighbor in player_locations[player2].neighbors:
-        player2_neighbors.append(str(neighbor))
-    current_neighbors2 = player_locations[player2].neighbors
-    print(f"Player 2, you are currently at {player_locations[player2].name}. You can move to Icebergs {player2_neighbors}")
-    player2 = int(input("Enter your new location: "))
-    while player2 not in current_neighbors2:
-        print("Not an avaiable iceberg!")
-        player2 = input("Player 2: enter one of your possible moves (as an int 0-9) : ")
-    while game_status == True:
-        next_round(alive_locations, game_status, player1, player2)
+    if game_status == True:
+        for neighbor in locations[player1].neighbors:
+            player1_neighbors.append(str(neighbor))
+        current_neighbors1 = locations[player1].neighbors
+        print(f"Player 1, you are currently at {locations[player1].name}. You can move to Icebergs {player1_neighbors}")
+        player1 = int(input("Enter your new location: "))
+        while player1 not in current_neighbors1:
+            print("Not an avaiable iceberg!")
+            player1 = input("Player 1: enter one of your possible moves (as an int 0-9) : ")
+        
+        player2_neighbors = []
+        for neighbor in locations[player2].neighbors:
+            player2_neighbors.append(str(neighbor))
+        current_neighbors2 = locations[player2].neighbors
+        print(f"Player 2, you are currently at {locations[player2].name}. You can move to Icebergs {player2_neighbors}")
+        player2 = int(input("Enter your new location: "))
+        while player2 not in current_neighbors2:
+            print("Not an avaiable iceberg!")
+            player2 = input("Player 2: enter one of your possible moves (as an int 0-9) : ")
+        while game_status == True:
+            next_round(alive_locations, game_status, player1, player2, round_number)
 
 
     
@@ -230,21 +162,21 @@ def lose(player):
 def tie():
     pass
 
-
+dead_icebergs = []
 def kill(index, alive_locations):
-    victim = alive_locations[index]
+    victim = alive_locations[index] #Location object
+    dead_icebergs.append(victim)
     print(victim.name+" has melted!")
     victim.aliveness = False
     alive_locations.remove(victim)
-    for neighbor in victim.neighbors: # to remove victim as a neighbor for each
-        alive_locations
-        player_locations[neighbor].neighbors.remove(victim)
-
+    for neighbor in victim.neighbors: # all of victim's neighbors
+        print(neighbor.neighbors)
+        locations[neighbor].neighbors.remove(victim)
     return alive_locations
 
 def end_game(result, game_status):
     if result == "tie":
-        label = Label(root,text="Game Over: Tie Game!",
+        label = Label(root,text="Tie Game!",
                 font=('Arial',40,'bold'),  # (font,size,style)
                 fg="pink",  # fg stands for foreground
                 bg="brown", # bg stands for background
@@ -253,7 +185,7 @@ def end_game(result, game_status):
                 padx=20) # pads space between text and border. also can do pady
         label.pack()
     elif result == "Player1 loss":
-        label = Label(root,text="Game Over: Player 2 Wins!",
+        label = Label(root,text="Player 2 Wins!",
                 font=('Arial',25,'bold'),  # (font,size,style)
                 fg="pink",  # fg stands for foreground
                 bg="brown", # bg stands for background
@@ -262,7 +194,7 @@ def end_game(result, game_status):
                 padx=20) # pads space between text and border. also can do pady
         label.pack()
     elif result == "Player2 loss":
-        label = Label(root,text="Game Over: Player 1 Wins!",
+        label = Label(root,text="Player 1 Wins!",
                 font=('Arial',25,'bold'),  # (font,size,style)
                 fg="pink",  # fg stands for foreground
                 bg="brown", # bg stands for background
@@ -272,6 +204,60 @@ def end_game(result, game_status):
         label.pack()
     root.mainloop()
     game_status = False
+
+
+player_positions = {"Player 1": player1, "Player 2": player2}
+
+def check_endgame(player_positions, dead_icebergs, round_number, total_rounds=9):
+    """
+    Determines if the game should end and who the winner is.
+    
+    Args:
+        player_positions (dict): Current positions of the players {player1: loc1, player2: loc2}.
+        dead_icebergs (list): List of "dead" icebergs.
+        round_number (int): Current round number.
+        total_rounds (int): Total number of rounds (default 9).
+    
+    Returns:
+        str: The outcome of the game (winner, loser, or tie).
+    """
+    player1, player2 = player_positions.keys()
+    position1, position2 = player_positions[player1], player_positions[player2]
+    
+    # Check if either player is on a dead iceberg
+    if position1 in dead_icebergs and position2 in dead_icebergs:
+        return "Both players lost (tie) - both were on dead icebergs."
+    elif position1 in dead_icebergs:
+        return f"{player2} wins! {player1} was on a dead iceberg."
+    elif position2 in dead_icebergs:
+        return f"{player1} wins! {player2} was on a dead iceberg."
+    
+    # Check if either player has no valid moves
+    # player1_moves = [loc for loc in graph[position1] if loc not in dead_icebergs]
+    # player2_moves = [loc for loc in graph[position2] if loc not in dead_icebergs]
+    
+    # if not player1_moves and not player2_moves:
+    #     return "Both players are stuck (tie)."
+    # elif not player1_moves:
+    #     return f"{player2} wins! {player1} has no valid moves."
+    # elif not player2_moves:
+    #     return f"{player1} wins! {player2} has no valid moves."
+    
+    # Check if it's the final round
+    if round_number == total_rounds:
+        return "Game ends in a tie - both players survived all rounds!"
+    
+    # If none of the above, the game continues
+    return "Game continues."
+
+# Example usage
+player_positions = {"Player 1": 3, "Player 2": 6}
+dead_icebergs = [1, 4, 7]
+round_number = 5
+
+result = check_endgame(player_positions, dead_icebergs, round_number)
+print(result)
+
 
 root = tk.Tk()
 root.geometry('300x300')
@@ -314,7 +300,9 @@ def order():
         
 
 while game_status ==True:
-    next_round(alive_locations, game_status, player1, player2)
+    next_round(alive_locations, game_status, player1, player2, round_number)
+result = check_endgame(player_positions, dead_icebergs, round_number)
+print(result)
 
 # def open_map(map):
 #     canvas = Canvas(root,height=500,width=500)
