@@ -117,7 +117,7 @@ player1, player2 = starting_positions()
 
 
 round_number = 0
-def next_round(alive_locations, game_status, player1, player2, round_number):
+def next_round(alive_locations, game_status, player1, player2, round_number, locations_dict):
     check_endgame({"Player 1": player1, "Player 2": player2}, dead_icebergs, round_number, total_rounds = 9)
     if len(alive_locations) == 1 :
         end_status = end_game("tie", game_status)
@@ -126,12 +126,12 @@ def next_round(alive_locations, game_status, player1, player2, round_number):
         round_number += 1
         to_die = random.randint(0,len(alive_locations)-1)
         to_compare = alive_locations[to_die].number
-        print(f"{to_die}, {alive_locations[to_die].number}")
-        kill(to_die, alive_locations)
-        print(f"Current Standings: Sunken icebergs: {dead_icebergs} {alive_locations[to_die].number},    Player 1 on iceberg: {player1},    and Player 2 on iceberg: {player2}\n")
+        print(f"{locations_dict[player1].neighbors}")
+        alive_locations, locations_dict = kill(to_die, alive_locations)
+        print(f"{locations_dict[player1].neighbors}")
+        print(f"Current Standings: Sunken icebergs: {dead_icebergs},    Player 1 on iceberg: {player1},    and Player 2 on iceberg: {player2}\n")
         if player1 == player2 == to_compare:
             result = "tie_loss"
-            print()
             end_status = end_game(result, game_status)
             return "Game Over"
         elif player1 == to_compare:
@@ -167,7 +167,7 @@ def next_round(alive_locations, game_status, player1, player2, round_number):
                     new_player2 = input(f"Player 2, Enter your new location out of options {player2_neighbors}: ")
                 player2 = int(new_player2)
                 while game_status == True:
-                    next_round(alive_locations, game_status, player1, player2, round_number)
+                    next_round(alive_locations, game_status, player1, player2, round_number, locations_dict)
 
 
     
@@ -200,7 +200,7 @@ def kill(index, alive_locations):
                 updated_neighbors.append(neigh)
         locations_dict[neighbor].neighbors = updated_neighbors
         # print(f"^'s new neighbors: {locations_dict[neighbor].neighbors}")
-    return alive_locations
+    return alive_locations, locations_dict
 
 def end_game(result, game_status):
     if result == "tie_loss":
@@ -309,7 +309,7 @@ def order():
         
 
 
-next_round(alive_locations, game_status, player1, player2, round_number)
+next_round(alive_locations, game_status, player1, player2, round_number, locations_dict)
 # result = check_endgame(player_positions, dead_icebergs, round_number)
 # print(result)
 
